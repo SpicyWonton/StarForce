@@ -41,6 +41,9 @@ namespace StarForce
                 case PowerUpData.EPowerUpType.AttackSpeedUp:
                     GameEntry.Buff.SetAttackSpeedUp(m_powerUpData.Value, m_powerUpData.Duration);
                     break;
+                case PowerUpData.EPowerUpType.MultiShot:
+                    GameEntry.Buff.SetMultiShot((int)m_powerUpData.Value, m_powerUpData.Duration);
+                    break;
             }
         }
     }

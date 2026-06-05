@@ -70,10 +70,17 @@ namespace StarForce
             }
 
             m_NextAttackTime = Time.time + m_WeaponData.AttackInterval * GameEntry.Buff.AttackSpeedUpScale;
-            GameEntry.Entity.ShowBullet(new BulletData(GameEntry.Entity.GenerateSerialId(), m_WeaponData.BulletId, m_WeaponData.OwnerId, m_WeaponData.OwnerCamp, m_WeaponData.Attack, m_WeaponData.BulletSpeed)
+
+            const float bulletSpacing = 0.5f;
+            int bulletCount = GameEntry.Buff.MultiShotCount;
+            float centerOffset = (bulletCount - 1) * 0.5f;
+            for (int i = 0; i < bulletCount; i++)
             {
-                Position = CachedTransform.position,
-            });
+                GameEntry.Entity.ShowBullet(new BulletData(GameEntry.Entity.GenerateSerialId(), m_WeaponData.BulletId, m_WeaponData.OwnerId, m_WeaponData.OwnerCamp, m_WeaponData.Attack, m_WeaponData.BulletSpeed)
+                {
+                    Position = CachedTransform.position + Vector3.right * ((i - centerOffset) * bulletSpacing),
+                });
+            }
             GameEntry.Sound.PlaySound(m_WeaponData.BulletSoundId);
         }
     }
