@@ -32,6 +32,11 @@ namespace StarForce
 
         public static void HideEntity(this EntityComponent entityComponent, Entity entity)
         {
+            if (entityComponent == null || entity == null || !entityComponent.HasEntity(entity.Id))
+            {
+                return;
+            }
+
             entityComponent.HideEntity(entity.Entity);
         }
 

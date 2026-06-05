@@ -5,10 +5,10 @@
 // Feedback: mailto:ellan@gameframework.cn
 //------------------------------------------------------------
 
+using System.Collections.Generic;
 using GameFramework;
 using GameFramework.Event;
 using GameFramework.Resource;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityGameFramework.Runtime;
 using ProcedureOwner = GameFramework.Fsm.IFsm<GameFramework.Procedure.IProcedureManager>;
@@ -30,6 +30,7 @@ namespace StarForce
             "UIForm",
             "UISound",
             "Weapon",
+            "PowerUp",
         };
 
         private Dictionary<string, bool> m_LoadedFlag = new Dictionary<string, bool>();
