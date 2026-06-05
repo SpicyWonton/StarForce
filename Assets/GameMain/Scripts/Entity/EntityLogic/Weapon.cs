@@ -69,7 +69,7 @@ namespace StarForce
                 return;
             }
 
-            m_NextAttackTime = Time.time + m_WeaponData.AttackInterval;
+            m_NextAttackTime = Time.time + m_WeaponData.AttackInterval * GameEntry.Buff.AttackSpeedUpScale;
             GameEntry.Entity.ShowBullet(new BulletData(GameEntry.Entity.GenerateSerialId(), m_WeaponData.BulletId, m_WeaponData.OwnerId, m_WeaponData.OwnerCamp, m_WeaponData.Attack, m_WeaponData.BulletSpeed)
             {
                 Position = CachedTransform.position,

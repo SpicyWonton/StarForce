@@ -14,6 +14,7 @@ namespace StarForce
     public class SurvivalGame : GameBase
     {
         private float m_ElapseSeconds = 0f;
+        private float m_PowerUpElapseSeconds = 0f;
 
         public override GameMode GameMode
         {
@@ -26,6 +27,19 @@ namespace StarForce
         public override void Update(float elapseSeconds, float realElapseSeconds)
         {
             base.Update(elapseSeconds, realElapseSeconds);
+
+            m_PowerUpElapseSeconds += elapseSeconds;
+            if (m_PowerUpElapseSeconds >= 3f)
+            {
+                m_PowerUpElapseSeconds = 0f;
+                IDataTable<DRPowerUp> dtPowerUp = GameEntry.DataTable.GetDataTable<DRPowerUp>();
+                float randomPositionX = SceneBackground.EnemySpawnBoundary.bounds.min.x + SceneBackground.EnemySpawnBoundary.bounds.size.x * (float)Utility.Random.GetRandomDouble();
+                float randomPositionZ = SceneBackground.EnemySpawnBoundary.bounds.min.z + SceneBackground.EnemySpawnBoundary.bounds.size.z * (float)Utility.Random.GetRandomDouble();
+                GameEntry.Entity.ShowPowerUp(new PowerUpData(GameEntry.Entity.GenerateSerialId(), 80000 + Utility.Random.GetRandom(dtPowerUp.Count))
+                {
+                    Position = new Vector3(randomPositionX, 0f, randomPositionZ),
+                });
+            }
 
             m_ElapseSeconds += elapseSeconds;
             if (m_ElapseSeconds >= 1f)

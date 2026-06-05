@@ -37,14 +37,13 @@ namespace StarForce
             GameEntry.Event.Subscribe(ShowEntitySuccessEventArgs.EventId, OnShowEntitySuccess);
             GameEntry.Event.Subscribe(ShowEntityFailureEventArgs.EventId, OnShowEntityFailure);
 
-            SceneBackground = Object.FindObjectOfType<ScrollableBackground>();
+            SceneBackground = Object.FindFirstObjectByType<ScrollableBackground>();
             if (SceneBackground == null)
             {
                 Log.Warning("Can not find scene background.");
                 return;
             }
 
-            SceneBackground.VisibleBoundary.gameObject.GetOrAddComponent<HideByBoundary>();
             GameEntry.Entity.ShowMyAircraft(new MyAircraftData(GameEntry.Entity.GenerateSerialId(), 10000)
             {
                 Name = "My Aircraft",

@@ -169,6 +169,17 @@ namespace StarForce
                 GameEntry.Entity.HideEntity(bullet);
                 return;
             }
+
+            PowerUp powerUp = other as PowerUp;
+            MyAircraft myAircraft = entity as MyAircraft;
+            if (powerUp != null && myAircraft != null)
+            {
+                powerUp.ApplyPowerUp();
+                GameEntry.Entity.HideEntity(powerUp);
+                return;
+            }
+
+            return;
         }
 
         private static int CalcDamageHP(int attack, int defense)

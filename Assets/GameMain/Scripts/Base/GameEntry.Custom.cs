@@ -26,10 +26,17 @@ namespace StarForce
             private set;
         }
 
+        public static BuffComponent Buff
+        {
+            get;
+            private set;
+        }
+
         private static void InitCustomComponents()
         {
             BuiltinData = UnityGameFramework.Runtime.GameEntry.GetComponent<BuiltinDataComponent>();
             HPBar = UnityGameFramework.Runtime.GameEntry.GetComponent<HPBarComponent>();
+            Buff = UnityGameFramework.Runtime.GameEntry.GetComponent<BuffComponent>();
         }
     }
 }
