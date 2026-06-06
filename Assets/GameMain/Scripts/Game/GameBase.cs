@@ -52,6 +52,8 @@ namespace StarForce
 
             GameOver = false;
             m_MyAircraft = null;
+
+            GameEntry.UI.OpenUIForm(UIFormId.GameForm);
         }
 
         public virtual void Shutdown()

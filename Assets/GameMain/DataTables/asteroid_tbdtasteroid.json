@@ -6,7 +6,8 @@
     "Speed": 2,
     "AngularSpeed": 30,
     "DeadEffectId": 70002,
-    "DeadSoundId": 20002
+    "DeadSoundId": 20002,
+    "Score": 3
   },
   {
     "Id": 60001,
@@ -15,7 +16,8 @@
     "Speed": 4,
     "AngularSpeed": 30,
     "DeadEffectId": 70002,
-    "DeadSoundId": 20002
+    "DeadSoundId": 20002,
+    "Score": 2
   },
   {
     "Id": 60002,
@@ -24,6 +26,7 @@
     "Speed": 6,
     "AngularSpeed": 30,
     "DeadEffectId": 70002,
-    "DeadSoundId": 20002
+    "DeadSoundId": 20002,
+    "Score": 1
   }
 ]

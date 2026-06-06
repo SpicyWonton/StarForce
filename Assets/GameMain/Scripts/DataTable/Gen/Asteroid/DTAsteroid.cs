@@ -27,6 +27,7 @@ public sealed partial class DTAsteroid : Luban.BeanBase
         AngularSpeed = (float)_obj.GetValue("AngularSpeed");
         DeadEffectId = (int)_obj.GetValue("DeadEffectId");
         DeadSoundId = (int)_obj.GetValue("DeadSoundId");
+        Score = (int)_obj.GetValue("Score");
     }
 
     public static DTAsteroid DeserializeDTAsteroid(JToken _buf)
@@ -62,6 +63,10 @@ public sealed partial class DTAsteroid : Luban.BeanBase
     /// 死亡声音编号
     /// </summary>
     public readonly int DeadSoundId;
+    /// <summary>
+    /// 分数
+    /// </summary>
+    public readonly int Score;
 
 
     public const int __ID__ = 330371166;
@@ -81,6 +86,7 @@ public sealed partial class DTAsteroid : Luban.BeanBase
         + "AngularSpeed:" + AngularSpeed + ","
         + "DeadEffectId:" + DeadEffectId + ","
         + "DeadSoundId:" + DeadSoundId + ","
+        + "Score:" + Score + ","
         + "}";
     }
 }

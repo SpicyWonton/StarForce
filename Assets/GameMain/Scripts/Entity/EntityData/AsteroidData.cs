@@ -5,8 +5,8 @@
 // Feedback: mailto:ellan@gameframework.cn
 //------------------------------------------------------------
 
-using GameFramework.DataTable;
 using System;
+using GameFramework.DataTable;
 using UnityEngine;
 
 namespace StarForce
@@ -32,6 +32,9 @@ namespace StarForce
         [SerializeField]
         private int m_DeadSoundId = 0;
 
+        [SerializeField]
+        private int m_Score = 0;
+
         public AsteroidData(int entityId, int typeId)
             : base(entityId, typeId, CampType.Neutral)
         {
@@ -48,6 +51,7 @@ namespace StarForce
             m_AngularSpeed = drAsteroid.AngularSpeed;
             m_DeadEffectId = drAsteroid.DeadEffectId;
             m_DeadSoundId = drAsteroid.DeadSoundId;
+            m_Score = drAsteroid.Score;
         }
 
         public override int MaxHP
@@ -95,6 +99,14 @@ namespace StarForce
             get
             {
                 return m_DeadSoundId;
+            }
+        }
+
+        public int Score
+        {
+            get
+            {
+                return m_Score;
             }
         }
     }

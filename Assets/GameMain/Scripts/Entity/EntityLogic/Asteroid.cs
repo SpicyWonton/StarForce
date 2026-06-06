@@ -68,6 +68,7 @@ namespace StarForce
                 Position = CachedTransform.localPosition,
             });
             GameEntry.Sound.PlaySound(m_AsteroidData.DeadSoundId);
+            GameEntry.Event.Fire(this, AsteroidDeadEventArgs.Create(this, m_AsteroidData.Score));
         }
 
         public override ImpactData GetImpactData()
@@ -75,4 +76,5 @@ namespace StarForce
             return new ImpactData(m_AsteroidData.Camp, m_AsteroidData.HP, m_AsteroidData.Attack, 0);
         }
     }
+
 }
