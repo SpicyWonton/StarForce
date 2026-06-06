@@ -1,0 +1,18 @@
+[
+  {
+    "Id": 80000,
+    "PowerUpType": 1,
+    "Duration": 10,
+    "Value": 0.5,
+    "Speed": 5,
+    "SoundId": 10000
+  },
+  {
+    "Id": 80001,
+    "PowerUpType": 2,
+    "Duration": 10,
+    "Value": 3,
+    "Speed": 5,
+    "SoundId": 10000
+  }
+]

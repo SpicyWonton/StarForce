@@ -9,5 +9,5 @@ dotnet $LUBAN_DLL \
     -c cs-newtonsoft-json \
     -d json \
     --conf $CONF_ROOT/luban.conf \
-    -x outputDataDir=output_data \
-    -x outputCodeDir=output_code
+    -x outputDataDir=../../../Assets/GameMain/DataTables \
+    -x outputCodeDir=../../../Assets/GameMain/Scripts/DataTable
