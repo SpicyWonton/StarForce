@@ -59,8 +59,8 @@ namespace StarForce
 
             int sceneId = procedureOwner.GetData<VarInt32>("NextSceneId");
             m_ChangeToMenu = sceneId == MenuSceneId;
-            IDataTable<DRScene> dtScene = GameEntry.DataTable.GetDataTable<DRScene>();
-            DRScene drScene = dtScene.GetDataRow(sceneId);
+            var tbScene = GameEntry.DataTable.Tables.TbDTScene;
+            var drScene = tbScene.GetOrDefault(sceneId);
             if (drScene == null)
             {
                 Log.Warning("Can not load scene '{0}' from data table.", sceneId.ToString());

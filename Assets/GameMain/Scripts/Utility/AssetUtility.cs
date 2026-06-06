@@ -21,6 +21,11 @@ namespace StarForce
             return Utility.Text.Format("Assets/GameMain/DataTables/{0}.{1}", assetName, fromBytes ? "bytes" : "txt");
         }
 
+        public static string GetLubanDataTableAsset(string assetName)
+        {
+            return Utility.Text.Format("Assets/GameMain/DataTables/{0}.json", assetName);
+        }
+
         public static string GetDictionaryAsset(string assetName, bool fromBytes)
         {
             return Utility.Text.Format("Assets/GameMain/Localization/{0}/Dictionaries/{1}.{2}", GameEntry.Localization.Language, assetName, fromBytes ? "bytes" : "xml");

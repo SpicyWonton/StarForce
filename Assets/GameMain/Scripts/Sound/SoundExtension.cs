@@ -21,8 +21,8 @@ namespace StarForce
         {
             soundComponent.StopMusic();
 
-            IDataTable<DRMusic> dtMusic = GameEntry.DataTable.GetDataTable<DRMusic>();
-            DRMusic drMusic = dtMusic.GetDataRow(musicId);
+            var tbMusic = GameEntry.DataTable.Tables.TbDTMusic;
+            var drMusic = tbMusic.GetOrDefault(musicId);
             if (drMusic == null)
             {
                 Log.Warning("Can not load music '{0}' from data table.", musicId.ToString());
@@ -52,8 +52,8 @@ namespace StarForce
 
         public static int? PlaySound(this SoundComponent soundComponent, int soundId, Entity bindingEntity = null, object userData = null)
         {
-            IDataTable<DRSound> dtSound = GameEntry.DataTable.GetDataTable<DRSound>();
-            DRSound drSound = dtSound.GetDataRow(soundId);
+            var tbSound = GameEntry.DataTable.Tables.TbDTSound;
+            var drSound = tbSound.GetOrDefault(soundId);
             if (drSound == null)
             {
                 Log.Warning("Can not load sound '{0}' from data table.", soundId.ToString());
@@ -70,8 +70,8 @@ namespace StarForce
 
         public static int? PlayUISound(this SoundComponent soundComponent, int uiSoundId, object userData = null)
         {
-            IDataTable<DRUISound> dtUISound = GameEntry.DataTable.GetDataTable<DRUISound>();
-            DRUISound drUISound = dtUISound.GetDataRow(uiSoundId);
+            var tbUISound = GameEntry.DataTable.Tables.TbDTUISound;
+            var drUISound = tbUISound.GetOrDefault(uiSoundId);
             if (drUISound == null)
             {
                 Log.Warning("Can not load UI sound '{0}' from data table.", uiSoundId.ToString());

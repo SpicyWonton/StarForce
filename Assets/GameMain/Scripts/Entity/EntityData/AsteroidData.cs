@@ -35,8 +35,8 @@ namespace StarForce
         public AsteroidData(int entityId, int typeId)
             : base(entityId, typeId, CampType.Neutral)
         {
-            IDataTable<DRAsteroid> dtAsteroid = GameEntry.DataTable.GetDataTable<DRAsteroid>();
-            DRAsteroid drAsteroid = dtAsteroid.GetDataRow(TypeId);
+            var tbAsteroid = GameEntry.DataTable.Tables.TbDTAsteroid;
+            var drAsteroid = tbAsteroid.GetOrDefault(TypeId);
             if (drAsteroid == null)
             {
                 return;

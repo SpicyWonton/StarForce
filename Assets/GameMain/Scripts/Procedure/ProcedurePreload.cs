@@ -17,20 +17,20 @@ namespace StarForce
 {
     public class ProcedurePreload : ProcedureBase
     {
-        public static readonly string[] DataTableNames = new string[]
+        private static readonly string[] LubanDataTableNames = new string[]
         {
-            "Aircraft",
-            "Armor",
-            "Asteroid",
-            "Entity",
-            "Music",
-            "Scene",
-            "Sound",
-            "Thruster",
-            "UIForm",
-            "UISound",
-            "Weapon",
-            "PowerUp",
+            "aircraft_tbdtaircraft",
+            "armor_tbdtarmor",
+            "asteroid_tbdtasteroid",
+            "entity_tbdtentity",
+            "music_tbdtmusic",
+            "powerup_tbdtpowerup",
+            "scene_tbdtscene",
+            "sound_tbdtsound",
+            "thruster_tbdtthruster",
+            "uiform_tbdtuiform",
+            "uisound_tbdtuisound",
+            "weapon_tbdtweapon",
         };
 
         private Dictionary<string, bool> m_LoadedFlag = new Dictionary<string, bool>();
@@ -49,8 +49,6 @@ namespace StarForce
 
             GameEntry.Event.Subscribe(LoadConfigSuccessEventArgs.EventId, OnLoadConfigSuccess);
             GameEntry.Event.Subscribe(LoadConfigFailureEventArgs.EventId, OnLoadConfigFailure);
-            GameEntry.Event.Subscribe(LoadDataTableSuccessEventArgs.EventId, OnLoadDataTableSuccess);
-            GameEntry.Event.Subscribe(LoadDataTableFailureEventArgs.EventId, OnLoadDataTableFailure);
             GameEntry.Event.Subscribe(LoadDictionarySuccessEventArgs.EventId, OnLoadDictionarySuccess);
             GameEntry.Event.Subscribe(LoadDictionaryFailureEventArgs.EventId, OnLoadDictionaryFailure);
 
@@ -63,8 +61,6 @@ namespace StarForce
         {
             GameEntry.Event.Unsubscribe(LoadConfigSuccessEventArgs.EventId, OnLoadConfigSuccess);
             GameEntry.Event.Unsubscribe(LoadConfigFailureEventArgs.EventId, OnLoadConfigFailure);
-            GameEntry.Event.Unsubscribe(LoadDataTableSuccessEventArgs.EventId, OnLoadDataTableSuccess);
-            GameEntry.Event.Unsubscribe(LoadDataTableFailureEventArgs.EventId, OnLoadDataTableFailure);
             GameEntry.Event.Unsubscribe(LoadDictionarySuccessEventArgs.EventId, OnLoadDictionarySuccess);
             GameEntry.Event.Unsubscribe(LoadDictionaryFailureEventArgs.EventId, OnLoadDictionaryFailure);
 
@@ -83,6 +79,8 @@ namespace StarForce
                 }
             }
 
+            GameEntry.DataTable.LoadTables();
+
             procedureOwner.SetData<VarInt32>("NextSceneId", GameEntry.Config.GetInt("Scene.Menu"));
             ChangeState<ProcedureChangeScene>(procedureOwner);
         }
@@ -93,10 +91,7 @@ namespace StarForce
             LoadConfig("DefaultConfig");
 
             // Preload data tables
-            foreach (string dataTableName in DataTableNames)
-            {
-                LoadDataTable(dataTableName);
-            }
+            LoadDataTables();
 
             // Preload dictionaries
             LoadDictionary("Default");
@@ -112,11 +107,34 @@ namespace StarForce
             GameEntry.Config.ReadData(configAssetName, this);
         }
 
-        private void LoadDataTable(string dataTableName)
+        private void LoadDataTables()
         {
-            string dataTableAssetName = AssetUtility.GetDataTableAsset(dataTableName, false);
-            m_LoadedFlag.Add(dataTableAssetName, false);
-            GameEntry.DataTable.LoadDataTable(dataTableName, dataTableAssetName, this);
+            for (int i = 0; i < LubanDataTableNames.Length; i++)
+            {
+                string dataTableName = LubanDataTableNames[i];
+                string dataTableAssetName = Utility.Text.Format("Assets/GameMain/DataTables/{0}.json", dataTableName);
+                m_LoadedFlag.Add(dataTableAssetName, false);
+                GameEntry.Resource.LoadAsset(dataTableAssetName, Constant.AssetPriority.DataTableAsset, new LoadAssetCallbacks(
+                    (assetName, asset, duration, userData) =>
+                    {
+                        TextAsset textAsset = asset as TextAsset;
+                        if (textAsset == null)
+                        {
+                            Log.Error("Luban data table '{0}' is invalid.", assetName);
+                            return;
+                        }
+
+                        string tableName = (string)userData;
+                        GameEntry.DataTable.AddDataTable(tableName, textAsset.text);
+                        m_LoadedFlag[assetName] = true;
+                        Log.Info("Load Luban data table '{0}' OK.", assetName);
+                    },
+                    (assetName, status, errorMessage, userData) =>
+                    {
+                        Log.Error("Can not load Luban data table '{0}' with error message '{1}'.", assetName, errorMessage);
+                    }),
+                    dataTableName);
+            }
         }
 
         private void LoadDictionary(string dictionaryName)
@@ -164,29 +182,6 @@ namespace StarForce
             }
 
             Log.Error("Can not load config '{0}' from '{1}' with error message '{2}'.", ne.ConfigAssetName, ne.ConfigAssetName, ne.ErrorMessage);
-        }
-
-        private void OnLoadDataTableSuccess(object sender, GameEventArgs e)
-        {
-            LoadDataTableSuccessEventArgs ne = (LoadDataTableSuccessEventArgs)e;
-            if (ne.UserData != this)
-            {
-                return;
-            }
-
-            m_LoadedFlag[ne.DataTableAssetName] = true;
-            Log.Info("Load data table '{0}' OK.", ne.DataTableAssetName);
-        }
-
-        private void OnLoadDataTableFailure(object sender, GameEventArgs e)
-        {
-            LoadDataTableFailureEventArgs ne = (LoadDataTableFailureEventArgs)e;
-            if (ne.UserData != this)
-            {
-                return;
-            }
-
-            Log.Error("Can not load data table '{0}' from '{1}' with error message '{2}'.", ne.DataTableAssetName, ne.DataTableAssetName, ne.ErrorMessage);
         }
 
         private void OnLoadDictionarySuccess(object sender, GameEventArgs e)

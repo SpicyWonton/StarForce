@@ -6,7 +6,6 @@
 //------------------------------------------------------------
 
 using GameFramework;
-using GameFramework.DataTable;
 using UnityEngine;
 
 namespace StarForce
@@ -32,10 +31,10 @@ namespace StarForce
             if (m_PowerUpElapseSeconds >= 3f)
             {
                 m_PowerUpElapseSeconds = 0f;
-                IDataTable<DRPowerUp> dtPowerUp = GameEntry.DataTable.GetDataTable<DRPowerUp>();
+                var tbPowerUp = GameEntry.DataTable.Tables.TbDTPowerUp;
                 float randomPositionX = SceneBackground.EnemySpawnBoundary.bounds.min.x + SceneBackground.EnemySpawnBoundary.bounds.size.x * (float)Utility.Random.GetRandomDouble();
                 float randomPositionZ = SceneBackground.EnemySpawnBoundary.bounds.min.z + SceneBackground.EnemySpawnBoundary.bounds.size.z * (float)Utility.Random.GetRandomDouble();
-                GameEntry.Entity.ShowPowerUp(new PowerUpData(GameEntry.Entity.GenerateSerialId(), 80000 + Utility.Random.GetRandom(dtPowerUp.Count))
+                GameEntry.Entity.ShowPowerUp(new PowerUpData(GameEntry.Entity.GenerateSerialId(), 80000 + Utility.Random.GetRandom(tbPowerUp.DataList.Count))
                 {
                     Position = new Vector3(randomPositionX, 0f, randomPositionZ),
                 });
@@ -45,10 +44,10 @@ namespace StarForce
             if (m_ElapseSeconds >= 1f)
             {
                 m_ElapseSeconds = 0f;
-                IDataTable<DRAsteroid> dtAsteroid = GameEntry.DataTable.GetDataTable<DRAsteroid>();
+                var tbAsteroid = GameEntry.DataTable.Tables.TbDTAsteroid;
                 float randomPositionX = SceneBackground.EnemySpawnBoundary.bounds.min.x + SceneBackground.EnemySpawnBoundary.bounds.size.x * (float)Utility.Random.GetRandomDouble();
                 float randomPositionZ = SceneBackground.EnemySpawnBoundary.bounds.min.z + SceneBackground.EnemySpawnBoundary.bounds.size.z * (float)Utility.Random.GetRandomDouble();
-                GameEntry.Entity.ShowAsteroid(new AsteroidData(GameEntry.Entity.GenerateSerialId(), 60000 + Utility.Random.GetRandom(dtAsteroid.Count))
+                GameEntry.Entity.ShowAsteroid(new AsteroidData(GameEntry.Entity.GenerateSerialId(), 60000 + Utility.Random.GetRandom(tbAsteroid.DataList.Count))
                 {
                     Position = new Vector3(randomPositionX, 0f, randomPositionZ),
                 });

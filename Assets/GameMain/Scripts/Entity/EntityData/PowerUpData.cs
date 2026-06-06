@@ -32,8 +32,8 @@ namespace StarForce
 
         public PowerUpData(int entityId, int typeId) : base(entityId, typeId)
         {
-            IDataTable<DRPowerUp> dtPowerUp = GameEntry.DataTable.GetDataTable<DRPowerUp>();
-            DRPowerUp drPowerUp = dtPowerUp.GetDataRow(TypeId);
+            var tbPowerUp = GameEntry.DataTable.Tables.TbDTPowerUp;
+            var drPowerUp = tbPowerUp.GetOrDefault(TypeId);
             if (drPowerUp == null)
             {
                 return;

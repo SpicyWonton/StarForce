@@ -39,8 +39,8 @@ namespace StarForce
         public AircraftData(int entityId, int typeId, CampType camp)
             : base(entityId, typeId, camp)
         {
-            IDataTable<DRAircraft> dtAircraft = GameEntry.DataTable.GetDataTable<DRAircraft>();
-            DRAircraft drAircraft = dtAircraft.GetDataRow(TypeId);
+            var tbAircraft = GameEntry.DataTable.Tables.TbDTAircraft;
+            var drAircraft = tbAircraft.GetOrDefault(TypeId);
             if (drAircraft == null)
             {
                 return;
@@ -48,15 +48,13 @@ namespace StarForce
 
             m_ThrusterData = new ThrusterData(GameEntry.Entity.GenerateSerialId(), drAircraft.ThrusterId, Id, Camp);
 
-            for (int index = 0, weaponId = 0; (weaponId = drAircraft.GetWeaponIdAt(index)) > 0; index++)
-            {
-                AttachWeaponData(new WeaponData(GameEntry.Entity.GenerateSerialId(), weaponId, Id, Camp));
-            }
+            AttachWeaponData(new WeaponData(GameEntry.Entity.GenerateSerialId(), drAircraft.WeaponId0, Id, Camp));
+            AttachWeaponData(new WeaponData(GameEntry.Entity.GenerateSerialId(), drAircraft.WeaponId1, Id, Camp));
+            AttachWeaponData(new WeaponData(GameEntry.Entity.GenerateSerialId(), drAircraft.WeaponId2, Id, Camp));
 
-            for (int index = 0, armorId = 0; (armorId = drAircraft.GetArmorIdAt(index)) > 0; index++)
-            {
-                AttachArmorData(new ArmorData(GameEntry.Entity.GenerateSerialId(), armorId, Id, Camp));
-            }
+            AttachArmorData(new ArmorData(GameEntry.Entity.GenerateSerialId(), drAircraft.ArmorId0, Id, Camp));
+            AttachArmorData(new ArmorData(GameEntry.Entity.GenerateSerialId(), drAircraft.ArmorId1, Id, Camp));
+            AttachArmorData(new ArmorData(GameEntry.Entity.GenerateSerialId(), drAircraft.ArmorId2, Id, Camp));
 
             m_DeadEffectId = drAircraft.DeadEffectId;
             m_DeadSoundId = drAircraft.DeadSoundId;

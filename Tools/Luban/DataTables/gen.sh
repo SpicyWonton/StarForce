@@ -10,4 +10,4 @@ dotnet $LUBAN_DLL \
     -d json \
     --conf $CONF_ROOT/luban.conf \
     -x outputDataDir=../../../Assets/GameMain/DataTables \
-    -x outputCodeDir=../../../Assets/GameMain/Scripts/DataTable
+    -x outputCodeDir=../../../Assets/GameMain/Scripts/DataTable/Gen
