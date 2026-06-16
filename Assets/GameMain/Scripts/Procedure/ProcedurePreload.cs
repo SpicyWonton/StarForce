@@ -109,31 +109,37 @@ namespace StarForce
 
         private void LoadDataTables()
         {
+            bool hasMyAsset = GameEntry.MyAsset != null;
             for (int i = 0; i < LubanDataTableNames.Length; i++)
             {
                 string dataTableName = LubanDataTableNames[i];
                 string dataTableAssetName = Utility.Text.Format("Assets/GameMain/DataTables/{0}.json", dataTableName);
                 m_LoadedFlag.Add(dataTableAssetName, false);
-                GameEntry.Resource.LoadAsset(dataTableAssetName, Constant.AssetPriority.DataTableAsset, new LoadAssetCallbacks(
-                    (assetName, asset, duration, userData) =>
+
+                if (!hasMyAsset)
+                {
+                    if (i == 0)
                     {
-                        TextAsset textAsset = asset as TextAsset;
+                        Log.Error("Can not load Luban data tables because MyAsset component is missing.");
+                    }
+
+                    continue;
+                }
+
+                GameEntry.MyAsset.LoadAssetAsync<TextAsset>(
+                    dataTableAssetName,
+                    textAsset =>
+                    {
                         if (textAsset == null)
                         {
-                            Log.Error("Luban data table '{0}' is invalid.", assetName);
+                            Log.Error("Can not load Luban data table '{0}' from MyAsset.", dataTableAssetName);
                             return;
                         }
 
-                        string tableName = (string)userData;
-                        GameEntry.DataTable.AddDataTable(tableName, textAsset.text);
-                        m_LoadedFlag[assetName] = true;
-                        Log.Info("Load Luban data table '{0}' OK.", assetName);
-                    },
-                    (assetName, status, errorMessage, userData) =>
-                    {
-                        Log.Error("Can not load Luban data table '{0}' with error message '{1}'.", assetName, errorMessage);
-                    }),
-                    dataTableName);
+                        GameEntry.DataTable.AddDataTable(dataTableName, textAsset.text);
+                        m_LoadedFlag[dataTableAssetName] = true;
+                        Log.Info("Load Luban data table '{0}' from MyAsset OK.", dataTableAssetName);
+                    });
             }
         }
 
