@@ -28,15 +28,24 @@ namespace StarForce.Editor.MyAsset
                 return;
             }
 
-            Dictionary<string, string> guidToPath = new Dictionary<string, string>();
+            Dictionary<string, string> guidToBundle = new Dictionary<string, string>();
             Dictionary<string, string> pathToBundle = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+            HashSet<string> bundleNames = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
             List<AssetBundleBuild> builds = new List<AssetBundleBuild>();
+            bool hasValidationError = false;
 
             foreach (MyBundleConfig bundleConfig in collection.bundles)
             {
                 if (bundleConfig == null || string.IsNullOrEmpty(bundleConfig.bundleName))
                 {
                     Debug.LogWarning("Skip bundle with empty name.");
+                    continue;
+                }
+
+                if (!bundleNames.Add(bundleConfig.bundleName))
+                {
+                    Debug.LogErrorFormat("Duplicate MyAsset bundle name: '{0}'.", bundleConfig.bundleName);
+                    hasValidationError = true;
                     continue;
                 }
 
@@ -48,6 +57,18 @@ namespace StarForce.Editor.MyAsset
                         continue;
                     }
 
+                    string existingBundleName;
+                    if (guidToBundle.TryGetValue(guid, out existingBundleName))
+                    {
+                        Debug.LogErrorFormat(
+                            "Asset guid '{0}' is collected by both bundle '{1}' and '{2}'.",
+                            guid,
+                            existingBundleName,
+                            bundleConfig.bundleName);
+                        hasValidationError = true;
+                        continue;
+                    }
+
                     string assetPath = AssetDatabase.GUIDToAssetPath(guid);
                     if (string.IsNullOrEmpty(assetPath))
                     {
@@ -55,7 +76,7 @@ namespace StarForce.Editor.MyAsset
                         continue;
                     }
 
-                    guidToPath[guid] = assetPath;
+                    guidToBundle[guid] = bundleConfig.bundleName;
                     pathToBundle[assetPath] = bundleConfig.bundleName;
                     assetPaths.Add(assetPath);
                 }
@@ -71,6 +92,12 @@ namespace StarForce.Editor.MyAsset
                     assetBundleName = bundleConfig.bundleName,
                     assetNames = assetPaths.ToArray()
                 });
+            }
+
+            if (hasValidationError)
+            {
+                Debug.LogError("MyAsset build stopped because collection validation failed.");
+                return;
             }
 
             if (builds.Count == 0)
@@ -152,6 +179,13 @@ namespace StarForce.Editor.MyAsset
                             {
                                 assetRecord.dependencyAssetPaths.Add(dependencyPath);
                             }
+                            else if (ShouldWarnMissingDependency(dependencyPath))
+                            {
+                                Debug.LogWarningFormat(
+                                    "Asset '{0}' depends on uncollected asset '{1}'. It will not be recorded as a MyAsset dependency.",
+                                    assetPath,
+                                    dependencyPath);
+                            }
                         }
 
                         version.assets.Add(assetRecord);
@@ -191,6 +225,17 @@ namespace StarForce.Editor.MyAsset
 
                 return builder.ToString();
             }
+        }
+
+        private static bool ShouldWarnMissingDependency(string dependencyPath)
+        {
+            if (string.IsNullOrEmpty(dependencyPath))
+            {
+                return false;
+            }
+
+            string extension = Path.GetExtension(dependencyPath).ToLowerInvariant();
+            return extension != ".cs" && extension != ".dll";
         }
     }
 }

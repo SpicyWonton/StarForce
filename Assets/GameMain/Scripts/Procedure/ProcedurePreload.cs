@@ -126,20 +126,26 @@ namespace StarForce
                     continue;
                 }
 
-                GameEntry.MyAsset.LoadAssetAsync<TextAsset>(
-                    dataTableAssetName,
-                    textAsset =>
+                MyAssetLoadHandle handle = GameEntry.MyAsset.LoadAssetAsync<TextAsset>(dataTableAssetName);
+                handle.Completed += () =>
+                {
+                    if (!handle.IsSuccess)
                     {
-                        if (textAsset == null)
-                        {
-                            Log.Error("Can not load Luban data table '{0}' from MyAsset.", dataTableAssetName);
-                            return;
-                        }
+                        Log.Error("Can not load Luban data table '{0}' from MyAsset with error message '{1}'.", dataTableAssetName, handle.ErrorMessage);
+                        return;
+                    }
 
-                        GameEntry.DataTable.AddDataTable(dataTableName, textAsset.text);
-                        m_LoadedFlag[dataTableAssetName] = true;
-                        Log.Info("Load Luban data table '{0}' from MyAsset OK.", dataTableAssetName);
-                    });
+                    TextAsset textAsset = handle.Asset as TextAsset;
+                    if (textAsset == null)
+                    {
+                        Log.Error("Luban data table '{0}' is invalid.", dataTableAssetName);
+                        return;
+                    }
+
+                    GameEntry.DataTable.AddDataTable(dataTableName, textAsset.text);
+                    m_LoadedFlag[dataTableAssetName] = true;
+                    Log.Info("Load Luban data table '{0}' from MyAsset OK.", dataTableAssetName);
+                };
             }
         }
 
