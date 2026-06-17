@@ -19,16 +19,8 @@ namespace StarForce
 
         private sealed class LoadingAssetInfo
         {
-            public UnityEngine.Object Asset;
             public int ReferenceCount;
-            public bool IsDone;
-            public bool IsSuccess;
             public string ErrorMessage;
-        }
-
-        private sealed class LoadingBundleInfo
-        {
-            public int ReferenceCount;
         }
 
         private sealed class MyAssetLoadTask

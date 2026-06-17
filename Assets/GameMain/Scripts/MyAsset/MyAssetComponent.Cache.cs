@@ -81,6 +81,18 @@ namespace StarForce
             }
         }
 
+        private void AddBundleReferences(MyAssetRecord assetRecord)
+        {
+            foreach (string bundleName in GetRequiredBundleNames(assetRecord))
+            {
+                LoadedBundleInfo loadedBundle;
+                if (m_LoadedBundles.TryGetValue(bundleName, out loadedBundle))
+                {
+                    loadedBundle.ReferenceCount++;
+                }
+            }
+        }
+
         private HashSet<string> GetRequiredBundleNames(MyAssetRecord assetRecord)
         {
             HashSet<string> bundleNames = new HashSet<string>(StringComparer.OrdinalIgnoreCase);

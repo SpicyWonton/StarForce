@@ -16,9 +16,7 @@ namespace StarForce
             int maxConcurrentCount = Mathf.Max(1, m_MaxConcurrentLoadTaskCount);
             while (m_RunningLoadTaskCount < maxConcurrentCount && m_WaitingTasks.Count > 0)
             {
-                int taskIndex = GetNextLoadTaskIndex();
-                MyAssetLoadTask task = m_WaitingTasks[taskIndex];
-                m_WaitingTasks.RemoveAt(taskIndex);
+                MyAssetLoadTask task = DequeueNextLoadTask();
 
                 if (task.Handle.IsReleased)
                 {
@@ -31,7 +29,7 @@ namespace StarForce
             }
         }
 
-        private int GetNextLoadTaskIndex()
+        private MyAssetLoadTask DequeueNextLoadTask()
         {
             int bestIndex = 0;
             MyAssetLoadTask bestTask = m_WaitingTasks[0];
@@ -46,7 +44,8 @@ namespace StarForce
                 }
             }
 
-            return bestIndex;
+            m_WaitingTasks.RemoveAt(bestIndex);
+            return bestTask;
         }
 
         private IEnumerator RunLoadTask(MyAssetLoadTask task)

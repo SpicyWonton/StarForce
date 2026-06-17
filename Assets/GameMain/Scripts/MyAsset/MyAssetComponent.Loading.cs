@@ -48,15 +48,25 @@ namespace StarForce
             if (m_LoadingAssets.TryGetValue(normalizedAssetPath, out loadingAsset))
             {
                 loadingAsset.ReferenceCount++;
-                while (!loadingAsset.IsDone)
+                while (m_LoadingAssets.ContainsKey(normalizedAssetPath))
                 {
                     yield return null;
                 }
 
-                T loadedWaitingAsset = loadingAsset.Asset as T;
-                if (loadingAsset.IsSuccess && loadedWaitingAsset != null)
+                LoadedAssetInfo loadedWaitingAsset;
+                if (m_LoadedAssets.TryGetValue(normalizedAssetPath, out loadedWaitingAsset))
                 {
-                    handle.Complete(true, loadedWaitingAsset, null);
+                    T waitingAsset = loadedWaitingAsset.Asset as T;
+                    if (waitingAsset != null)
+                    {
+                        handle.Complete(true, waitingAsset, null);
+                    }
+                    else
+                    {
+                        string errorMessage = string.Format("MyAsset cached asset type mismatch: '{0}'.", normalizedAssetPath);
+                        Log.Error(errorMessage);
+                        handle.Complete(false, null, errorMessage);
+                    }
                 }
                 else
                 {
@@ -82,9 +92,7 @@ namespace StarForce
                 {
                     string errorMessage = string.Format("MyAsset bundle load failed: '{0}'.", bundleName);
                     loadingAsset.ErrorMessage = errorMessage;
-                    loadingAsset.IsDone = true;
                     m_LoadingAssets.Remove(normalizedAssetPath);
-                    ReleaseAssetBundles(assetRecord);
                     handle.Complete(false, null, errorMessage);
                     yield break;
                 }
@@ -100,9 +108,7 @@ namespace StarForce
                 string errorMessage = string.Format("MyAsset asset type mismatch or missing: '{0}'.", normalizedAssetPath);
                 Log.Error(errorMessage);
                 loadingAsset.ErrorMessage = errorMessage;
-                loadingAsset.IsDone = true;
                 m_LoadingAssets.Remove(normalizedAssetPath);
-                ReleaseAssetBundles(assetRecord);
                 handle.Complete(false, null, errorMessage);
                 yield break;
             }
@@ -112,9 +118,8 @@ namespace StarForce
                 Asset = asset,
                 ReferenceCount = loadingAsset.ReferenceCount
             };
-            loadingAsset.Asset = asset;
-            loadingAsset.IsSuccess = true;
-            loadingAsset.IsDone = true;
+            AddBundleReferences(assetRecord);
+
             m_LoadingAssets.Remove(normalizedAssetPath);
 
             handle.Complete(true, asset, null);
@@ -122,18 +127,14 @@ namespace StarForce
 
         private IEnumerator EnsureBundleLoaded(string bundleName)
         {
-            LoadedBundleInfo loadedBundle;
-            if (m_LoadedBundles.TryGetValue(bundleName, out loadedBundle))
+            if (m_LoadedBundles.ContainsKey(bundleName))
             {
-                loadedBundle.ReferenceCount++;
                 yield break;
             }
 
-            LoadingBundleInfo loadingBundle;
-            if (m_LoadingBundles.TryGetValue(bundleName, out loadingBundle))
+            if (m_LoadingBundles.Contains(bundleName))
             {
-                loadingBundle.ReferenceCount++;
-                while (m_LoadingBundles.ContainsKey(bundleName))
+                while (m_LoadingBundles.Contains(bundleName))
                 {
                     yield return null;
                 }
@@ -156,11 +157,7 @@ namespace StarForce
             }
 
             AssetBundleCreateRequest request = AssetBundle.LoadFromFileAsync(bundlePath);
-            loadingBundle = new LoadingBundleInfo
-            {
-                ReferenceCount = 1
-            };
-            m_LoadingBundles[bundleName] = loadingBundle;
+            m_LoadingBundles.Add(bundleName);
 
             yield return request;
             m_LoadingBundles.Remove(bundleName);
@@ -174,7 +171,7 @@ namespace StarForce
             m_LoadedBundles[bundleName] = new LoadedBundleInfo
             {
                 Bundle = request.assetBundle,
-                ReferenceCount = loadingBundle.ReferenceCount
+                ReferenceCount = 0
             };
         }
 

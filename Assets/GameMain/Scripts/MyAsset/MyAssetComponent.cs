@@ -19,7 +19,7 @@ namespace StarForce
         private readonly Dictionary<string, LoadedAssetInfo> m_LoadedAssets = new Dictionary<string, LoadedAssetInfo>(StringComparer.OrdinalIgnoreCase);
         private readonly Dictionary<string, LoadingAssetInfo> m_LoadingAssets = new Dictionary<string, LoadingAssetInfo>(StringComparer.OrdinalIgnoreCase);
         private readonly Dictionary<string, LoadedBundleInfo> m_LoadedBundles = new Dictionary<string, LoadedBundleInfo>(StringComparer.OrdinalIgnoreCase);
-        private readonly Dictionary<string, LoadingBundleInfo> m_LoadingBundles = new Dictionary<string, LoadingBundleInfo>(StringComparer.OrdinalIgnoreCase);
+        private readonly HashSet<string> m_LoadingBundles = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
         private readonly List<MyAssetLoadTask> m_WaitingTasks = new List<MyAssetLoadTask>();
 
         private bool m_Initialized;
